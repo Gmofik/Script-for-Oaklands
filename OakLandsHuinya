@@ -1,0 +1,295 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Huinya", HidePremium = false, SaveConfig = false, ConfigFolder = "OrionTest",IntroText = "Huinya?"})
+
+local EspTab = Window:MakeTab({
+	Name = "Esp",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local ChooseTab = Window:MakeTab({
+	Name = "Choose Ores",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local SettingsTab = Window:MakeTab({
+	Name = "Settings",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+Distance = 500 ---Default distance from character
+colors = {
+    ['221, 146, 17'] = 'Gold',
+    ['90, 166, 165'] = 'Mythril',
+    ['209, 53, 53'] = 'Adurite',
+    ['89, 50, 165'] = 'Magnetite',
+    ['255, 152, 220'] = "Rosa Flama Quartz"
+}
+
+---Func for create Boxes
+function addbox(ore,color,orename)
+    if ore:FindFirstChild("Box") == nil and (ore.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= Distance then
+        local OreColor = color
+        local Ore = ore
+        local OreName = orename
+        local Box = Instance.new("BoxHandleAdornment", Ore)
+        Box.Adornee = Ore
+        Box.ZIndex = 0
+        Box.Size = Ore.Size
+        Box.Transparency = 0
+        Box.Color3 = OreColor
+        Box.AlwaysOnTop = true
+        Box.Name = "Box"
+    elseif (ore.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude > Distance then
+        if ore:FindFirstChild("Box") then
+            ore.Box:Destroy()
+        end
+    end
+end
+
+---Func for search ores
+function forore(delore, delorecolor)
+    local Folders = {workspace.World.RockRegions.Island,game.workspace.World.RockRegions.MainIslandMarble,game.workspace.World.RockRegions.MainIslandBeach}
+    for _,Folder in ipairs(Folders) do
+        for _,obj in ipairs(Folder:GetChildren()) do
+            for _, section in ipairs(obj:GetChildren()) do
+                local xd = section:FindFirstChild("Model") and section.Model:FindFirstChild("XD")
+                if _G.Sisya then
+                    if xd and colors[tostring(Color3.new(xd.Color.R*255,xd.Color.G*255,xd.Color.B*255))] then
+                        addbox(section, xd.Color, colors[tostring(Color3.new(xd.Color.R*255,xd.Color.G*255,xd.Color.B*255))])
+                    end
+                elseif not _G.Sisya then
+                    if section:FindFirstChild("Box") then
+                        section.Box:Destroy()
+                    end
+                end
+                if _G.Names then
+                    if xd and colors[tostring(Color3.new(xd.Color.R*255,xd.Color.G*255,xd.Color.B*255))] then
+                        addname(section, xd.Color, colors[tostring(Color3.new(xd.Color.R*255,xd.Color.G*255,xd.Color.B*255))])
+                    end
+                elseif not _G.Names then
+                    if section:FindFirstChild("Nametag") then
+                        section.Nametag:Destroy()
+                    end
+                end
+                if delore == false and colors[tostring(delorecolor)] == nil then
+                   if xd and colors[tostring(delorecolor)] == nil then
+                       if section:FindFirstChild("Box") then
+                           section.Box:Destroy()
+                       end
+                       if section:FindFirstChild("Nametag") then
+                           section.Nametag:Destroy()
+                       end
+                   end
+                end
+            end
+        end
+    end
+end
+
+---Func for create nametags
+function addname(ore,color,name)
+    if ore:FindFirstChild("Nametag") == nil and (ore.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= Distance then
+		local nametag = Instance.new('BillboardGui', ore)
+		local label = Instance.new('TextLabel', nametag)
+		nametag.Name = 'Nametag'
+		nametag.Active = false
+		nametag.Adornee = ore
+		nametag.Size = UDim2.new(1.5, 300,1.5, 15)
+		nametag.StudsOffset = Vector3.new(0, 2, 0)
+		nametag.MaxDistance = Distance
+		nametag.AlwaysOnTop = true
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.new(1, 0,1, 0)
+		label.TextScaled = true
+		label.Name = "Label"
+		label.Text = "[ "..name.." ]"
+		label.TextColor3 = color
+    elseif (ore.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude > Distance then
+        if ore:FindFirstChild("Nametag") then
+            ore.Nametag:Destroy()
+        end
+	end
+end
+
+SettingsTab:AddSlider({
+	Name = "Distance from character",
+	Min = 100,
+	Max = 10000,
+	Default = Distance,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 10,
+	ValueName = "Distance",
+	Callback = function(Value)
+		Distance = Value
+	end    
+})
+
+SettingsTab:AddBind({
+	Name = "Gui Toggle",
+	Default = Enum.KeyCode.LeftAlt,
+	Hold = false,
+	Callback = function()
+		game:GetService("CoreGui"):FindFirstChild('Orion'):GetChildren()[2].Visible = not game:GetService("CoreGui"):FindFirstChild('Orion'):GetChildren()[2].Visible
+	end
+})
+
+EspTab:AddToggle({
+	Name = "Boxes",
+	Default = false,
+	Callback = function(Value)
+	    _G.Sisya = Value
+        ---Searching ores
+        if _G.Sisya then
+            spawn(function()
+                while _G.Sisya and wait(0.5) do
+                    forore()
+                end
+            end)
+        else
+            spawn(function()
+                while not _G.Sisya and wait(0.5) do
+                    forore()
+                end
+            end)
+        end
+	end
+})
+
+EspTab:AddToggle({
+	Name = "Names",
+	Default = false,
+	Callback = function(Value)
+	    _G.Names = Value
+        ---Searching ores
+        if _G.Names then
+            spawn(function()
+                while _G.Names and wait(0.5) do
+                    forore()
+                end
+            end)
+        else
+            spawn(function()
+                while not _G.Names and wait(0.5) do
+                    forore()
+                end
+            end)
+        end
+	end
+})
+
+
+
+SettingsTab:AddBind({
+	Name = "Home Teleport",
+	Default = Enum.KeyCode.P,
+	Hold = false,
+	Callback = function()
+		for i,v in pairs(game:GetService("Workspace").World.Property:GetChildren()) do
+            if v:FindFirstChild("Owner") and v.Owner.Value == game.Players.LocalPlayer then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v:FindFirstChild("MainRegion").CFrame
+            end
+        end
+	end    
+})
+
+ChooseTab:AddToggle({
+	Name = "Gold",
+	Default = true,
+	Callback = function(Value)
+		_G.Gold = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['221, 146, 17'] and not _G.Gold then
+        		    colors['221, 146, 17'] = nil
+        		    forore(_G.Gold, Color3.new(221, 146, 17))
+        		elseif _G.Gold and colors['221, 146, 17'] == nil then
+        		    colors['221, 146, 17'] = "Gold"
+        		end
+		    end
+		end)
+	end    
+})
+
+ChooseTab:AddToggle({
+	Name = "Mythril",
+	Default = true,
+	Callback = function(Value)
+		_G.Mythril = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['90, 166, 165'] and not _G.Mythril then
+        		    colors['90, 166, 165'] = nil
+        		    forore(_G.Mythril, Color3.new(90, 166, 165))
+        		elseif _G.Mythril and colors['90, 166, 165'] == nil then
+        		    colors['90, 166, 165'] = "Mythril"
+        		end
+		    end
+		end)
+	end    
+})
+
+ChooseTab:AddToggle({
+	Name = "Adurite",
+	Default = true,
+	Callback = function(Value)
+		_G.Adurite = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['209, 53, 53'] and not _G.Adurite then
+        		    colors['209, 53, 53'] = nil
+        		    forore(_G.Adurite, Color3.new(209, 53, 53))
+        		elseif _G.Adurite and colors['209, 53, 53'] == nil then
+        		    colors['209, 53, 53'] = "Adurite"
+        		end
+		    end
+		end)
+	end    
+})
+
+ChooseTab:AddToggle({
+	Name = "Magnetite",
+	Default = true,
+	Callback = function(Value)
+		_G.Magnetite = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['89, 50, 165'] and not _G.Magnetite then
+        		    colors['89, 50, 165'] = nil
+        		    forore(_G.Magnetite, Color3.new(89, 50, 165))
+        		elseif _G.Magnetite and colors['89, 50, 165'] == nil then
+        		    colors['89, 50, 165'] = "Magnetite"
+        		end
+		    end
+		end)
+	end    
+})
+
+ChooseTab:AddToggle({
+	Name = "Rosa Flama Quartz",
+	Default = true,
+	Callback = function(Value)
+		_G.RosaFlama = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['255, 152, 220'] and not _G.RosaFlama then
+        		    colors['255, 152, 220'] = nil
+        		    forore(_G.RosaFlama, Color3.new(255, 152, 220))
+        		elseif _G.RosaFlama and colors['255, 152, 220'] == nil then
+        		    colors['255, 152, 220'] = "Rosa Flama Quartz"
+        		end
+		    end
+		end)
+	end    
+})
+
+OrionLib:MakeNotification({
+	Name = "Huinya?",
+	Content = "Credits: Gmofik#4556",
+	Image = "rbxassetid://4483345998",
+	Time = 5
+})
+
+OrionLib:Init()
