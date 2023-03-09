@@ -1,5 +1,5 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Huinya", HidePremium = false, SaveConfig = false, ConfigFolder = "OrionTest",IntroText = "Huinya?"})
+local Window = OrionLib:MakeWindow({Name = "Huinya", HidePremium = false, SaveConfig = false, ConfigFolder = "OrionTest",IntroText = "#Credits: Gmofik#4556"})
 
 local EspTab = Window:MakeTab({
 	Name = "Esp",
