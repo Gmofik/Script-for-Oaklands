@@ -1,25 +1,23 @@
+---OrionLib Creating
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Huinya", HidePremium = false, SaveConfig = false, ConfigFolder = "OrionTest",IntroText = "#Credits: Gmofik#4556"})
+local Window = OrionLib:MakeWindow({Name = ("[HUINYA]"), HidePremium = false, SaveConfig = true, ConfigFolder = "Huinya", IntroText = "#Credits: Gmofik#4556", IntroIcon = "rbxassetid://12739424491", Icon = "rbxassetid://12739424491"})
 
 local EspTab = Window:MakeTab({
 	Name = "Esp",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-
-local ChooseTab = Window:MakeTab({
-	Name = "Choose Ores",
-	Icon = "rbxassetid://4483345998",
+	Icon = "rbxassetid://12739424491",
 	PremiumOnly = false
 })
 
 local SettingsTab = Window:MakeTab({
 	Name = "Settings",
-	Icon = "rbxassetid://4483345998",
+	Icon = "rbxassetid://12739424491",
 	PremiumOnly = false
 })
+---
 
-Distance = 500 ---Default distance from character
+
+---Some data
+Distance = 500
 colors = {
     ['221, 146, 17'] = 'Gold',
     ['90, 166, 165'] = 'Mythril',
@@ -27,8 +25,10 @@ colors = {
     ['89, 50, 165'] = 'Magnetite',
     ['255, 152, 220'] = "Rosa Flama Quartz"
 }
+---
 
----Func for create Boxes
+---Esp funcs
+--Box func
 function addbox(ore,color,orename)
     if ore:FindFirstChild("Box") == nil and (ore.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= Distance then
         local OreColor = color
@@ -49,7 +49,7 @@ function addbox(ore,color,orename)
     end
 end
 
----Func for search ores
+--Search ore func
 function forore(delore, delorecolor)
     local Folders = {workspace.World.RockRegions.Island,game.workspace.World.RockRegions.MainIslandMarble,game.workspace.World.RockRegions.MainIslandBeach}
     for _,Folder in ipairs(Folders) do
@@ -89,7 +89,7 @@ function forore(delore, delorecolor)
     end
 end
 
----Func for create nametags
+--Nametags func
 function addname(ore,color,name)
     if ore:FindFirstChild("Nametag") == nil and (ore.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= Distance then
 		local nametag = Instance.new('BillboardGui', ore)
@@ -113,7 +113,9 @@ function addname(ore,color,name)
         end
 	end
 end
+---
 
+---SettingsTab
 SettingsTab:AddSlider({
 	Name = "Distance from character",
 	Min = 100,
@@ -122,6 +124,8 @@ SettingsTab:AddSlider({
 	Color = Color3.fromRGB(255,255,255),
 	Increment = 10,
 	ValueName = "Distance",
+	Flag = "DistanceSlider",
+	Save = true,
 	Callback = function(Value)
 		Distance = Value
 	end    
@@ -131,13 +135,35 @@ SettingsTab:AddBind({
 	Name = "Gui Toggle",
 	Default = Enum.KeyCode.LeftAlt,
 	Hold = false,
+	Flag = "GuiBind",
+	Save = true,
 	Callback = function()
 		game:GetService("CoreGui"):FindFirstChild('Orion'):GetChildren()[2].Visible = not game:GetService("CoreGui"):FindFirstChild('Orion'):GetChildren()[2].Visible
 	end
 })
 
+SettingsTab:AddBind({
+	Name = "Home Teleport",
+	Default = Enum.KeyCode.P,
+	Hold = false,
+	Flag = "HomeBind",
+	Save = true,
+	Callback = function()
+		for i,v in pairs(game:GetService("Workspace").World.Property:GetChildren()) do
+            if v:FindFirstChild("Owner") and v.Owner.Value == game.Players.LocalPlayer then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v:FindFirstChild("MainRegion").CFrame + Vector3.new(0,15,0)
+            end
+        end
+	end    
+})
+---
+
+---EspTab
+
+EspTab:AddParagraph("Toggles","Just toggles.")
+
 EspTab:AddToggle({
-	Name = "Boxes",
+	Name = "Ore-Boxes",
 	Default = false,
 	Callback = function(Value)
 	    _G.Sisya = Value
@@ -159,7 +185,7 @@ EspTab:AddToggle({
 })
 
 EspTab:AddToggle({
-	Name = "Names",
+	Name = "Ore-Names",
 	Default = false,
 	Callback = function(Value)
 	    _G.Names = Value
@@ -180,24 +206,14 @@ EspTab:AddToggle({
 	end
 })
 
+EspTab:AddParagraph("Ores","Choose ores you want to see.")
 
 
-SettingsTab:AddBind({
-	Name = "Home Teleport",
-	Default = Enum.KeyCode.P,
-	Hold = false,
-	Callback = function()
-		for i,v in pairs(game:GetService("Workspace").World.Property:GetChildren()) do
-            if v:FindFirstChild("Owner") and v.Owner.Value == game.Players.LocalPlayer then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v:FindFirstChild("MainRegion").CFrame + Vector3.new(0,15,0)
-            end
-        end
-	end    
-})
-
-ChooseTab:AddToggle({
+EspTab:AddToggle({
 	Name = "Gold",
 	Default = true,
+	Flag = "GoldToggle",
+	Save = true,
 	Callback = function(Value)
 		_G.Gold = Value
 		spawn(function()
@@ -213,9 +229,11 @@ ChooseTab:AddToggle({
 	end    
 })
 
-ChooseTab:AddToggle({
+EspTab:AddToggle({
 	Name = "Mythril",
 	Default = true,
+	Flag = "MythrilToggle",
+	Save = true,
 	Callback = function(Value)
 		_G.Mythril = Value
 		spawn(function()
@@ -231,9 +249,11 @@ ChooseTab:AddToggle({
 	end    
 })
 
-ChooseTab:AddToggle({
+EspTab:AddToggle({
 	Name = "Adurite",
 	Default = true,
+	Flag = "AduriteToggle",
+	Save = true,
 	Callback = function(Value)
 		_G.Adurite = Value
 		spawn(function()
@@ -249,9 +269,11 @@ ChooseTab:AddToggle({
 	end    
 })
 
-ChooseTab:AddToggle({
+EspTab:AddToggle({
 	Name = "Magnetite",
 	Default = true,
+	Flag = "MagnetiteToggle",
+	Save = true,
 	Callback = function(Value)
 		_G.Magnetite = Value
 		spawn(function()
@@ -267,9 +289,11 @@ ChooseTab:AddToggle({
 	end    
 })
 
-ChooseTab:AddToggle({
+EspTab:AddToggle({
 	Name = "Rosa Flama Quartz",
 	Default = true,
+	Flag = "RosaToggle",
+	Save = true,
 	Callback = function(Value)
 		_G.RosaFlama = Value
 		spawn(function()
@@ -284,12 +308,17 @@ ChooseTab:AddToggle({
 		end)
 	end    
 })
+---
 
+---Notification
 OrionLib:MakeNotification({
-	Name = "Huinya?",
+	Name = "Sigma?",
 	Content = "Credits: Gmofik#4556",
-	Image = "rbxassetid://4483345998",
-	Time = 5
+	Image = "rbxassetid://12739424491",
+	Time = 3
 })
+---
 
+---Just end
 OrionLib:Init()
+---
