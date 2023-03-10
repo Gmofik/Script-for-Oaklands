@@ -18,7 +18,13 @@ local SettingsTab = Window:MakeTab({
 
 ---Some data
 Distance = 500
+
 colors = {
+    ['229, 228, 223'] = 'Tin',
+    ['255, 255, 255'] = 'Quartz',
+    ['207, 165, 15'] = 'Pyrite',
+    ['206, 98, 35'] = 'Copper',
+    ['111, 107, 118'] = 'Iron',
     ['221, 146, 17'] = 'Gold',
     ['90, 166, 165'] = 'Mythril',
     ['209, 53, 53'] = 'Adurite',
@@ -208,6 +214,105 @@ EspTab:AddToggle({
 
 EspTab:AddParagraph("Ores","Choose ores you want to see.")
 
+EspTab:AddToggle({
+	Name = "Tin",
+	Default = true,
+	Flag = "TinToggle",
+	Save = true,
+	Callback = function(Value)
+		_G.Tin = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['229, 228, 223'] and not _G.Tin then
+        		    colors['229, 228, 223'] = nil
+        		    forore(_G.Tin, Color3.new(229, 228, 223))
+        		elseif _G.Tin and colors['229, 228, 223'] == nil then
+        		    colors['229, 228, 223'] = "Tin"
+        		end
+		    end
+		end)
+	end    
+})
+
+EspTab:AddToggle({
+	Name = "Quartz",
+	Default = true,
+	Flag = "QuartzToggle",
+	Save = true,
+	Callback = function(Value)
+		_G.Quartz = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['255, 255, 255'] and not _G.Quartz then
+        		    colors['255, 255, 255'] = nil
+        		    forore(_G.Quartz, Color3.new(255, 255, 255))
+        		elseif _G.Quartz and colors['255, 255, 255'] == nil then
+        		    colors['255, 255, 255'] = "Quartz"
+        		end
+		    end
+		end)
+	end    
+})
+
+EspTab:AddToggle({
+	Name = "Pyrite",
+	Default = true,
+	Flag = "PyriteToggle",
+	Save = true,
+	Callback = function(Value)
+		_G.Pyrite = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['207, 165, 15'] and not _G.Pyrite then
+        		    colors['207, 165, 15'] = nil
+        		    forore(_G.Pyrite, Color3.new(207, 165, 15))
+        		elseif _G.Pyrite and colors['207, 165, 15'] == nil then
+        		    colors['207, 165, 15'] = "Pyrite"
+        		end
+		    end
+		end)
+	end
+})
+
+EspTab:AddToggle({
+	Name = "Copper",
+	Default = true,
+	Flag = "CopperToggle",
+	Save = true,
+	Callback = function(Value)
+		_G.Copper = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['206, 98, 35'] and not _G.Copper then
+        		    colors['206, 98, 35'] = nil
+        		    forore(_G.Copper, Color3.new(206, 98, 35))
+        		elseif _G.Copper and colors['206, 98, 35'] == nil then
+        		    colors['206, 98, 35'] = "Copper"
+        		end
+		    end
+		end)
+	end    
+})
+
+EspTab:AddToggle({
+	Name = "Iron",
+	Default = true,
+	Flag = "IronToggle",
+	Save = true,
+	Callback = function(Value)
+		_G.Iron = Value
+		spawn(function()
+		    while wait(0.5) do
+        		if colors['111, 107, 118'] and not _G.Iron then
+        		    colors['111, 107, 118'] = nil
+        		    forore(_G.Iron, Color3.new(111, 107, 118))
+        		elseif _G.Iron and colors['111, 107, 118'] == nil then
+        		    colors['111, 107, 118'] = "Iron"
+        		end
+		    end
+		end)
+	end    
+})
 
 EspTab:AddToggle({
 	Name = "Gold",
